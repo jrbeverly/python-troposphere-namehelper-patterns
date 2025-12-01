@@ -1,0 +1,58 @@
+# Python project metadata for the `namehelper` library.
+#
+# Scope (issue #10): this file establishes installable project metadata and a
+# `src/` layout so downstream issues land into stable module boundaries. It
+# intentionally declares no runtime dependencies — the core library is meant
+# to stay lightweight and usable outside any single integration (PROBLEM.md
+# "Architectural Constraints").
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "namehelper"
+version = "0.0.0"
+description = "Structured, constraint-aware AWS resource naming for Python infrastructure workflows."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+authors = [{ name = "ACME" }]
+keywords = ["aws", "naming", "troposphere", "cloudformation", "infrastructure"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries",
+]
+# No runtime dependencies. The core must remain adapter-agnostic; integration
+# extras (e.g. Troposphere) are added by later issues as optional extras.
+dependencies = []
+
+[project.optional-dependencies]
+# Developer loop tooling. The baseline `make test` loop uses only the stdlib
+# (`unittest`) so it works with zero installs; these extras enable the richer
+# pytest/ruff workflow downstream issues will build on.
+dev = [
+  "pytest>=7.0",
+  "ruff>=0.1",
+]
+examples = [
+  "troposphere>=4.10,<5",
+]
+
+[project.urls]
+"Design (HLD)" = "https://git/src/branch/main/HLD.md"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+# Verification layers from HLD "Repository and Module Shape".
+testpaths = ["tests/unit", "tests/integration", "tests/contract"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+src = ["src", "tests"]
+target-version = "py311"
+line-length = 100
